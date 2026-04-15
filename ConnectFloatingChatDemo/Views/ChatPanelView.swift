@@ -6,6 +6,7 @@ struct ChatPanelView: View {
     @EnvironmentObject private var overlayManager: FloatingChatOverlayManager
 
     let isOverlayPresentation: Bool
+    @FocusState private var isComposerFocused: Bool
 
     var body: some View {
         VStack(spacing: 0) {
@@ -121,7 +122,12 @@ struct ChatPanelView: View {
             HStack(spacing: 12) {
                 TextField("Type a message", text: $chatService.draftMessage, axis: .vertical)
                     .textFieldStyle(.roundedBorder)
+                    .focused($isComposerFocused)
+                    .submitLabel(.send)
                     .disabled(!chatService.isConnected)
+                    .onSubmit {
+                        chatService.sendDraftMessage()
+                    }
 
                 if chatService.isConnected {
                     Button {
@@ -150,6 +156,8 @@ struct ChatPanelView: View {
             }
 
             if chatService.isConnected {
+                quickReplyRow
+
                 Button("Disconnect") {
                     chatService.disconnect()
                 }
@@ -163,6 +171,18 @@ struct ChatPanelView: View {
         }
         .padding(16)
         .background(.background)
+        .onChange(of: chatService.connectionState) { newValue in
+            guard newValue == .connected else {
+                isComposerFocused = false
+                return
+            }
+
+            focusComposer()
+        }
+        .onChange(of: overlayManager.isExpanded) { isExpanded in
+            guard isOverlayPresentation, isExpanded, chatService.isConnected else { return }
+            focusComposer()
+        }
     }
 
     private var emptyState: some View {
@@ -192,10 +212,43 @@ struct ChatPanelView: View {
         )
     }
 
+    @ViewBuilder
+    private var quickReplyRow: some View {
+        if settingsStore.providerMode == .mock {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    quickReplyButton("Where is my order?")
+                    quickReplyButton("I want a refund")
+                    quickReplyButton("Talk to an agent")
+                }
+            }
+        }
+    }
+
     private func startMockSessionIfNeeded() {
         guard settingsStore.providerMode == .mock else { return }
         guard chatService.connectionState == .idle else { return }
         chatService.startSession(using: settingsStore.currentConfiguration)
+    }
+
+    private func quickReplyButton(_ text: String) -> some View {
+        Button {
+            chatService.draftMessage = text
+            chatService.sendDraftMessage()
+        } label: {
+            Text(text)
+                .font(.footnote.weight(.medium))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+        }
+        .buttonStyle(.bordered)
+    }
+
+    private func focusComposer() {
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(150))
+            isComposerFocused = true
+        }
     }
 }
 

@@ -22,6 +22,7 @@ final class FloatingChatOverlayManager: ObservableObject {
         isVisible = true
         isExpanded = false
         overlayWindow?.isHidden = false
+        overlayWindow?.makeKeyAndVisible()
     }
 
     func expand() {
@@ -29,6 +30,7 @@ final class FloatingChatOverlayManager: ObservableObject {
         isVisible = true
         isExpanded = true
         overlayWindow?.isHidden = false
+        overlayWindow?.makeKeyAndVisible()
     }
 
     func minimize() {
