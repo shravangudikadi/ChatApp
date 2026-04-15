@@ -55,6 +55,15 @@ struct RootTabView: View {
                             description: settingsStore.providerMode == .mock ? "Mock provider drives the transcript locally. The UI layer is already structured so you can swap to the real SDK provider later." : "Real SDK provider selected. The app will attempt the true Amazon Connect SDK path as soon as a bootstrap service returns participant details.",
                             accent: settingsStore.providerMode == .mock ? .green : .blue
                         )
+
+                        ChatStatusCard(
+                            title: "Typing Test",
+                            description: "Use the inline panel below if the floating overlay does not capture keyboard focus reliably in simulator. The same chat service powers both views.",
+                            accent: .orange
+                        )
+
+                        ChatPanelView(isOverlayPresentation: false)
+                            .frame(minHeight: 560)
                     }
                     .padding(20)
                 }
