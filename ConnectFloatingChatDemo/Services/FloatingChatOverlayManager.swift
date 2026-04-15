@@ -8,6 +8,7 @@ final class FloatingChatOverlayManager: ObservableObject {
     @Published var bubbleOffset = CGSize(width: -24, height: -120)
 
     private var overlayWindow: PassthroughWindow?
+    private weak var hostWindow: UIWindow?
     private let chatService: AmazonConnectChatService
     private let settingsStore: ChatSettingsStore
 
@@ -38,6 +39,9 @@ final class FloatingChatOverlayManager: ObservableObject {
         isVisible = false
         isExpanded = false
         overlayWindow?.isHidden = true
+        overlayWindow?.rootViewController = nil
+        overlayWindow = nil
+        hostWindow?.makeKey()
     }
 
     private func installOverlayIfNeeded() {
@@ -46,6 +50,8 @@ final class FloatingChatOverlayManager: ObservableObject {
         if overlayWindow?.windowScene == scene, overlayWindow != nil {
             return
         }
+
+        hostWindow = activeHostWindow(in: scene)
 
         let window = PassthroughWindow(windowScene: scene)
         window.frame = scene.coordinateSpace.bounds
@@ -79,5 +85,13 @@ final class FloatingChatOverlayManager: ObservableObject {
         }
 
         return firstScene
+    }
+
+    private func activeHostWindow(in scene: UIWindowScene) -> UIWindow? {
+        if let keyWindow = scene.windows.first(where: { $0.isKeyWindow && !($0 is PassthroughWindow) }) {
+            return keyWindow
+        }
+
+        return scene.windows.first(where: { !($0 is PassthroughWindow) })
     }
 }
