@@ -1,18 +1,36 @@
 import Foundation
 import AWSCore
 
-enum ConnectionMode: String, CaseIterable, Identifiable {
-    case startChatEndpoint
-    case directParticipantToken
+enum ChatProviderMode: String, CaseIterable, Identifiable {
+    case mock
+    case amazonConnect
 
     var id: String { rawValue }
 
     var title: String {
         switch self {
-        case .startChatEndpoint:
-            return "Start Chat Endpoint"
-        case .directParticipantToken:
-            return "Participant Token"
+        case .mock:
+            return "Mock"
+        case .amazonConnect:
+            return "Amazon Connect"
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .mock:
+            return "Runs fully locally with realistic support scenarios, transcript behavior, and UI state changes."
+        case .amazonConnect:
+            return "Uses the real Amazon Connect iOS SDK path. The only missing dependency is a bootstrap service that returns participant chat details."
+        }
+    }
+
+    var startButtonTitle: String {
+        switch self {
+        case .mock:
+            return "Start Mock Chat"
+        case .amazonConnect:
+            return "Connect Real SDK"
         }
     }
 }
@@ -71,152 +89,141 @@ enum AWSRegionOption: String, CaseIterable, Identifiable {
     }
 }
 
-struct ChatConnectionConfiguration {
-    let connectionMode: ConnectionMode
+struct ChatProviderConfiguration {
+    let providerMode: ChatProviderMode
     let region: AWSRegionOption
-    let startChatEndpoint: String
+    let customerName: String
+    let customerId: String
+    let orderId: String
+    let membershipTier: String
+    let locale: String
+    let issueType: String
+    let bootstrapEndpoint: String
     let instanceId: String
     let contactFlowId: String
-    let customerName: String
-    let participantToken: String
-    let participantId: String
-    let contactId: String
+
+    var bootstrapRequest: ChatBootstrapRequest {
+        ChatBootstrapRequest(
+            customerName: customerName,
+            customerId: customerId,
+            orderId: orderId,
+            membershipTier: membershipTier,
+            locale: locale,
+            issueType: issueType,
+            region: region.rawValue,
+            instanceId: instanceId,
+            contactFlowId: contactFlowId
+        )
+    }
+
+    static let previewMock = ChatProviderConfiguration(
+        providerMode: .mock,
+        region: .usEast1,
+        customerName: "Taylor",
+        customerId: "CUST-1024",
+        orderId: "ORD-9981",
+        membershipTier: "Gold",
+        locale: "en-US",
+        issueType: "delivery_status",
+        bootstrapEndpoint: "",
+        instanceId: "",
+        contactFlowId: ""
+    )
+
+    static let previewAmazonConnect = ChatProviderConfiguration(
+        providerMode: .amazonConnect,
+        region: .usEast1,
+        customerName: "Taylor",
+        customerId: "CUST-1024",
+        orderId: "ORD-9981",
+        membershipTier: "Gold",
+        locale: "en-US",
+        issueType: "delivery_status",
+        bootstrapEndpoint: "https://your-api.example.com/chat/start",
+        instanceId: "connect-instance-id",
+        contactFlowId: "contact-flow-id"
+    )
 }
 
 @MainActor
 final class ChatSettingsStore: ObservableObject {
-    @Published var connectionMode: ConnectionMode { didSet { persist() } }
+    @Published var providerMode: ChatProviderMode { didSet { persist() } }
     @Published var region: AWSRegionOption { didSet { persist() } }
-    @Published var startChatEndpoint: String { didSet { persist() } }
+    @Published var customerName: String { didSet { persist() } }
+    @Published var customerId: String { didSet { persist() } }
+    @Published var orderId: String { didSet { persist() } }
+    @Published var membershipTier: String { didSet { persist() } }
+    @Published var locale: String { didSet { persist() } }
+    @Published var issueType: String { didSet { persist() } }
+    @Published var bootstrapEndpoint: String { didSet { persist() } }
     @Published var instanceId: String { didSet { persist() } }
     @Published var contactFlowId: String { didSet { persist() } }
-    @Published var customerName: String { didSet { persist() } }
-    @Published var participantToken: String { didSet { persist() } }
-    @Published var participantId: String { didSet { persist() } }
-    @Published var contactId: String { didSet { persist() } }
 
     private let userDefaults: UserDefaults
 
     init(userDefaults: UserDefaults = .standard) {
         self.userDefaults = userDefaults
 
-        connectionMode = ConnectionMode(rawValue: userDefaults.string(forKey: Keys.connectionMode) ?? "") ?? .startChatEndpoint
+        providerMode = ChatProviderMode(rawValue: userDefaults.string(forKey: Keys.providerMode) ?? "") ?? .mock
         region = AWSRegionOption(rawValue: userDefaults.string(forKey: Keys.region) ?? "") ?? .usEast1
-        startChatEndpoint = userDefaults.string(forKey: Keys.startChatEndpoint) ?? ""
-        instanceId = userDefaults.string(forKey: Keys.instanceId) ?? ""
-        contactFlowId = userDefaults.string(forKey: Keys.contactFlowId) ?? ""
         customerName = userDefaults.string(forKey: Keys.customerName) ?? "Taylor"
-        participantToken = userDefaults.string(forKey: Keys.participantToken) ?? ""
-        participantId = userDefaults.string(forKey: Keys.participantId) ?? ""
-        contactId = userDefaults.string(forKey: Keys.contactId) ?? ""
-
-        bootstrapFromBundledConfigIfNeeded()
+        customerId = userDefaults.string(forKey: Keys.customerId) ?? "CUST-1024"
+        orderId = userDefaults.string(forKey: Keys.orderId) ?? "ORD-9981"
+        membershipTier = userDefaults.string(forKey: Keys.membershipTier) ?? "Gold"
+        locale = userDefaults.string(forKey: Keys.locale) ?? "en-US"
+        issueType = userDefaults.string(forKey: Keys.issueType) ?? "delivery_status"
+        bootstrapEndpoint = userDefaults.string(forKey: Keys.bootstrapEndpoint) ?? "https://your-api.example.com/chat/start"
+        instanceId = userDefaults.string(forKey: Keys.instanceId) ?? "connect-instance-id"
+        contactFlowId = userDefaults.string(forKey: Keys.contactFlowId) ?? "contact-flow-id"
     }
 
-    var currentConfiguration: ChatConnectionConfiguration {
-        ChatConnectionConfiguration(
-            connectionMode: connectionMode,
+    var currentConfiguration: ChatProviderConfiguration {
+        ChatProviderConfiguration(
+            providerMode: providerMode,
             region: region,
-            startChatEndpoint: startChatEndpoint.trimmingCharacters(in: .whitespacesAndNewlines),
-            instanceId: instanceId.trimmingCharacters(in: .whitespacesAndNewlines),
-            contactFlowId: contactFlowId.trimmingCharacters(in: .whitespacesAndNewlines),
-            customerName: customerName.trimmingCharacters(in: .whitespacesAndNewlines),
-            participantToken: participantToken.trimmingCharacters(in: .whitespacesAndNewlines),
-            participantId: participantId.trimmingCharacters(in: .whitespacesAndNewlines),
-            contactId: contactId.trimmingCharacters(in: .whitespacesAndNewlines)
+            customerName: customerName.trimmed,
+            customerId: customerId.trimmed,
+            orderId: orderId.trimmed,
+            membershipTier: membershipTier.trimmed,
+            locale: locale.trimmed,
+            issueType: issueType.trimmed,
+            bootstrapEndpoint: bootstrapEndpoint.trimmed,
+            instanceId: instanceId.trimmed,
+            contactFlowId: contactFlowId.trimmed
         )
     }
 
     private func persist() {
-        userDefaults.set(connectionMode.rawValue, forKey: Keys.connectionMode)
+        userDefaults.set(providerMode.rawValue, forKey: Keys.providerMode)
         userDefaults.set(region.rawValue, forKey: Keys.region)
-        userDefaults.set(startChatEndpoint, forKey: Keys.startChatEndpoint)
+        userDefaults.set(customerName, forKey: Keys.customerName)
+        userDefaults.set(customerId, forKey: Keys.customerId)
+        userDefaults.set(orderId, forKey: Keys.orderId)
+        userDefaults.set(membershipTier, forKey: Keys.membershipTier)
+        userDefaults.set(locale, forKey: Keys.locale)
+        userDefaults.set(issueType, forKey: Keys.issueType)
+        userDefaults.set(bootstrapEndpoint, forKey: Keys.bootstrapEndpoint)
         userDefaults.set(instanceId, forKey: Keys.instanceId)
         userDefaults.set(contactFlowId, forKey: Keys.contactFlowId)
-        userDefaults.set(customerName, forKey: Keys.customerName)
-        userDefaults.set(participantToken, forKey: Keys.participantToken)
-        userDefaults.set(participantId, forKey: Keys.participantId)
-        userDefaults.set(contactId, forKey: Keys.contactId)
-    }
-
-    func loadBundledConfig() {
-        guard let configuration = BundledPOCConfiguration.load() else {
-            return
-        }
-
-        connectionMode = configuration.connectionMode
-        region = configuration.region
-        startChatEndpoint = configuration.startChatEndpoint
-        instanceId = configuration.instanceId
-        contactFlowId = configuration.contactFlowId
-        customerName = configuration.customerName
-        participantToken = configuration.participantToken
-        participantId = configuration.participantId
-        contactId = configuration.contactId
-    }
-
-    private func bootstrapFromBundledConfigIfNeeded() {
-        let hasSavedValues =
-            !startChatEndpoint.isEmpty ||
-            !instanceId.isEmpty ||
-            !contactFlowId.isEmpty ||
-            !participantToken.isEmpty ||
-            !participantId.isEmpty ||
-            !contactId.isEmpty
-
-        guard !hasSavedValues else {
-            return
-        }
-
-        loadBundledConfig()
     }
 }
 
 private enum Keys {
-    static let connectionMode = "chat.connectionMode"
+    static let providerMode = "chat.providerMode"
     static let region = "chat.region"
-    static let startChatEndpoint = "chat.startChatEndpoint"
+    static let customerName = "chat.customerName"
+    static let customerId = "chat.customerId"
+    static let orderId = "chat.orderId"
+    static let membershipTier = "chat.membershipTier"
+    static let locale = "chat.locale"
+    static let issueType = "chat.issueType"
+    static let bootstrapEndpoint = "chat.bootstrapEndpoint"
     static let instanceId = "chat.instanceId"
     static let contactFlowId = "chat.contactFlowId"
-    static let customerName = "chat.customerName"
-    static let participantToken = "chat.participantToken"
-    static let participantId = "chat.participantId"
-    static let contactId = "chat.contactId"
 }
 
-private struct BundledPOCConfiguration {
-    let connectionMode: ConnectionMode
-    let region: AWSRegionOption
-    let startChatEndpoint: String
-    let instanceId: String
-    let contactFlowId: String
-    let customerName: String
-    let participantToken: String
-    let participantId: String
-    let contactId: String
-
-    static func load(bundle: Bundle = .main) -> BundledPOCConfiguration? {
-        guard
-            let url = bundle.url(forResource: "ConnectPOCConfig", withExtension: "plist"),
-            let data = try? Data(contentsOf: url),
-            let plist = try? PropertyListSerialization.propertyList(from: data, format: nil) as? [String: Any]
-        else {
-            return nil
-        }
-
-        let modeRawValue = plist["connectionMode"] as? String ?? ConnectionMode.startChatEndpoint.rawValue
-        let regionRawValue = plist["region"] as? String ?? AWSRegionOption.usEast1.rawValue
-
-        return BundledPOCConfiguration(
-            connectionMode: ConnectionMode(rawValue: modeRawValue) ?? .startChatEndpoint,
-            region: AWSRegionOption(rawValue: regionRawValue) ?? .usEast1,
-            startChatEndpoint: plist["startChatEndpoint"] as? String ?? "",
-            instanceId: plist["instanceId"] as? String ?? "",
-            contactFlowId: plist["contactFlowId"] as? String ?? "",
-            customerName: plist["customerName"] as? String ?? "Taylor",
-            participantToken: plist["participantToken"] as? String ?? "",
-            participantId: plist["participantId"] as? String ?? "",
-            contactId: plist["contactId"] as? String ?? ""
-        )
+private extension String {
+    var trimmed: String {
+        trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

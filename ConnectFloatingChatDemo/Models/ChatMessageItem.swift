@@ -1,5 +1,13 @@
 import Foundation
 
+enum ChatConnectionState {
+    case idle
+    case connecting
+    case connected
+    case ended
+    case failed
+}
+
 enum ChatMessageDirection {
     case incoming
     case outgoing

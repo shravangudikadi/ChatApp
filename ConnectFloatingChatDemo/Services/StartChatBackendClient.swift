@@ -1,55 +1,86 @@
 import Foundation
 
-struct ChatStartupCredentials {
+struct ChatBootstrapRequest: Encodable {
+    let customerName: String
+    let customerId: String
+    let orderId: String
+    let membershipTier: String
+    let locale: String
+    let issueType: String
+    let region: String
+    let instanceId: String
+    let contactFlowId: String
+}
+
+struct ChatBootstrapResponse {
     let participantToken: String
     let participantId: String?
     let contactId: String?
 }
 
-enum StartChatBackendError: LocalizedError {
+protocol ChatSessionBootstrapProviding {
+    func fetchBootstrap(using configuration: ChatProviderConfiguration) async throws -> ChatBootstrapResponse
+}
+
+enum ChatBootstrapError: LocalizedError {
+    case localPocOnly
     case invalidEndpoint
     case invalidResponse
     case missingCredentials
+    case missingConfiguration(String)
 
     var errorDescription: String? {
         switch self {
+        case .localPocOnly:
+            return "The real Amazon Connect SDK path is already wired, but this build is still using a placeholder bootstrap provider. Replace `ChatSessionBootstrapProviding` with your backend call to StartChatContact."
         case .invalidEndpoint:
-            return "The Start Chat endpoint URL is invalid."
+            return "The bootstrap endpoint is invalid. Enter a real service URL that starts the chat and returns participant details."
         case .invalidResponse:
-            return "The Start Chat endpoint returned data in an unexpected format."
+            return "The bootstrap service returned an unexpected response shape."
         case .missingCredentials:
-            return "The response did not contain participantToken, participantId, and contactId fields."
+            return "The bootstrap response did not include a valid participant token."
+        case .missingConfiguration(let field):
+            return "Missing required configuration: \(field)."
         }
     }
 }
 
-final class StartChatBackendClient {
-    func startChat(using configuration: ChatConnectionConfiguration) async throws -> ChatStartupCredentials {
-        guard let url = URL(string: configuration.startChatEndpoint), !configuration.startChatEndpoint.isEmpty else {
-            throw StartChatBackendError.invalidEndpoint
+final class PlaceholderBootstrapProvider: ChatSessionBootstrapProviding {
+    func fetchBootstrap(using configuration: ChatProviderConfiguration) async throws -> ChatBootstrapResponse {
+        throw ChatBootstrapError.localPocOnly
+    }
+}
+
+final class NetworkChatSessionBootstrapProvider: ChatSessionBootstrapProviding {
+    func fetchBootstrap(using configuration: ChatProviderConfiguration) async throws -> ChatBootstrapResponse {
+        guard !configuration.bootstrapEndpoint.isEmpty else {
+            throw ChatBootstrapError.missingConfiguration("Bootstrap Endpoint")
+        }
+
+        guard !configuration.instanceId.isEmpty else {
+            throw ChatBootstrapError.missingConfiguration("Connect Instance ID")
+        }
+
+        guard !configuration.contactFlowId.isEmpty else {
+            throw ChatBootstrapError.missingConfiguration("Contact Flow ID")
+        }
+
+        guard let url = URL(string: configuration.bootstrapEndpoint) else {
+            throw ChatBootstrapError.invalidEndpoint
         }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONEncoder().encode(
-            StartChatRequest(
-                connectInstanceId: configuration.instanceId,
-                contactFlowId: configuration.contactFlowId,
-                participantDetails: .init(DisplayName: configuration.customerName),
-                attributes: ["customerName": configuration.customerName]
-            )
-        )
+        request.httpBody = try JSONEncoder().encode(configuration.bootstrapRequest)
 
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse, (200 ... 299).contains(httpResponse.statusCode) else {
-            throw StartChatBackendError.invalidResponse
+            throw ChatBootstrapError.invalidResponse
         }
 
-        guard
-            let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any]
-        else {
-            throw StartChatBackendError.invalidResponse
+        guard let jsonObject = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw ChatBootstrapError.invalidResponse
         }
 
         let participantToken = Self.findString(key: "participantToken", in: jsonObject)
@@ -60,10 +91,10 @@ final class StartChatBackendClient {
             ?? Self.findString(key: "ContactId", in: jsonObject)
 
         guard let participantToken, !participantToken.isEmpty else {
-            throw StartChatBackendError.missingCredentials
+            throw ChatBootstrapError.missingCredentials
         }
 
-        return ChatStartupCredentials(
+        return ChatBootstrapResponse(
             participantToken: participantToken,
             participantId: participantId,
             contactId: contactId
@@ -95,15 +126,4 @@ final class StartChatBackendClient {
 
         return nil
     }
-}
-
-private struct StartChatRequest: Encodable {
-    let connectInstanceId: String
-    let contactFlowId: String
-    let participantDetails: ParticipantDetails
-    let attributes: [String: String]
-}
-
-private struct ParticipantDetails: Encodable {
-    let DisplayName: String
 }

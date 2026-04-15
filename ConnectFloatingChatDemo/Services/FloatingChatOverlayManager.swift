@@ -9,9 +9,11 @@ final class FloatingChatOverlayManager: ObservableObject {
 
     private var overlayWindow: PassthroughWindow?
     private let chatService: AmazonConnectChatService
+    private let settingsStore: ChatSettingsStore
 
-    init(chatService: AmazonConnectChatService) {
+    init(chatService: AmazonConnectChatService, settingsStore: ChatSettingsStore) {
         self.chatService = chatService
+        self.settingsStore = settingsStore
     }
 
     func showBubble() {
@@ -54,6 +56,7 @@ final class FloatingChatOverlayManager: ObservableObject {
         let rootView = FloatingChatOverlayView()
             .environmentObject(self)
             .environmentObject(chatService)
+            .environmentObject(settingsStore)
 
         let controller = UIHostingController(rootView: rootView)
         controller.view.backgroundColor = .clear

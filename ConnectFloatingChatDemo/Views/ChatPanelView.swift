@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ChatPanelView: View {
+    @EnvironmentObject private var settingsStore: ChatSettingsStore
     @EnvironmentObject private var chatService: AmazonConnectChatService
     @EnvironmentObject private var overlayManager: FloatingChatOverlayManager
 
@@ -88,25 +89,25 @@ struct ChatPanelView: View {
                 }
             }
 
-            mockModeCard
+            providerModeCard
         }
         .padding(16)
         .background(.thinMaterial)
     }
 
-    private var mockModeCard: some View {
+    private var providerModeCard: some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "testtube.2")
-                .foregroundStyle(Color(red: 0.02, green: 0.66, blue: 0.62))
+            Image(systemName: chatService.activeProviderMode == .mock ? "testtube.2" : "antenna.radiowaves.left.and.right")
+                .foregroundStyle(chatService.activeProviderMode == .mock ? Color(red: 0.02, green: 0.66, blue: 0.62) : Color(red: 0.11, green: 0.46, blue: 0.95))
 
-            Text("Mock transcript only. The Amazon Connect SDK is linked into the project, but this screen uses local fake messages so you can review the UI without any backend.")
+            Text(chatService.providerDescription)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
         .padding(14)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color(red: 0.95, green: 0.99, blue: 0.97))
+                .fill(chatService.activeProviderMode == .mock ? Color(red: 0.95, green: 0.99, blue: 0.97) : Color(red: 0.95, green: 0.97, blue: 1.0))
         )
     }
 
@@ -130,18 +131,18 @@ struct ChatPanelView: View {
                     .tint(Color(red: 0.11, green: 0.46, blue: 0.95))
                 } else {
                     Button {
-                        chatService.startMockChat()
+                        chatService.startSession(using: settingsStore.currentConfiguration)
                     } label: {
                         if chatService.connectionState == .connecting {
                             ProgressView()
                                 .frame(width: 40, height: 40)
                         } else {
-                            Image(systemName: "bolt.horizontal.circle.fill")
+                            Image(systemName: settingsStore.providerMode == .mock ? "play.circle.fill" : "antenna.radiowaves.left.and.right")
                                 .frame(width: 40, height: 40)
                         }
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(Color(red: 0.02, green: 0.66, blue: 0.62))
+                    .tint(settingsStore.providerMode == .mock ? Color(red: 0.02, green: 0.66, blue: 0.62) : Color(red: 0.11, green: 0.46, blue: 0.95))
                 }
             }
 
@@ -151,8 +152,8 @@ struct ChatPanelView: View {
                 }
                 .font(.footnote.weight(.semibold))
             } else {
-                Button("Reset Demo") {
-                    chatService.resetDemo()
+                Button("Reset Session") {
+                    chatService.resetDemo(using: settingsStore.currentConfiguration)
                 }
                 .font(.footnote.weight(.semibold))
             }
@@ -166,7 +167,7 @@ struct ChatPanelView: View {
             Text("No messages yet")
                 .font(.headline)
 
-            Text("Start the mock session and the floating chat will fill with sample support messages immediately.")
+            Text(settingsStore.providerMode == .mock ? "Start the mock session and the floating chat will fill with realistic support messages immediately." : "The real provider is already wired to the Amazon Connect SDK. Once your bootstrap endpoint exists, connect here and the rest of the UI can stay the same.")
                 .foregroundStyle(.secondary)
         }
         .padding(18)
