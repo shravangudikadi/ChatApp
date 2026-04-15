@@ -93,7 +93,11 @@ struct ConnectionFormView: View {
 
             Button {
                 chatService.startSession(using: settingsStore.currentConfiguration)
-                overlayManager.expand()
+                if settingsStore.providerMode == .amazonConnect {
+                    overlayManager.expand()
+                } else {
+                    overlayManager.hide()
+                }
             } label: {
                 Label(
                     settingsStore.providerMode.startButtonTitle,

@@ -117,6 +117,10 @@ struct ChatPanelView: View {
 
     private var composer: some View {
         VStack(spacing: 12) {
+            if chatService.isConnected {
+                quickReplyRow
+            }
+
             Divider()
 
             HStack(spacing: 12) {
@@ -156,8 +160,6 @@ struct ChatPanelView: View {
             }
 
             if chatService.isConnected {
-                quickReplyRow
-
                 Button("Disconnect") {
                     chatService.disconnect()
                 }
@@ -215,11 +217,17 @@ struct ChatPanelView: View {
     @ViewBuilder
     private var quickReplyRow: some View {
         if settingsStore.providerMode == .mock {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 8) {
-                    quickReplyButton("Where is my order?")
-                    quickReplyButton("I want a refund")
-                    quickReplyButton("Talk to an agent")
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Try a mock question")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        quickReplyButton("Where is my order?")
+                        quickReplyButton("I want a refund")
+                        quickReplyButton("Talk to an agent")
+                    }
                 }
             }
         }

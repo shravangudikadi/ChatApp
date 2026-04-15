@@ -1,12 +1,19 @@
 import SwiftUI
 
 struct RootTabView: View {
+    private enum DemoTab: Hashable {
+        case swiftUI
+        case uikit
+        case poc
+    }
+
     @EnvironmentObject private var settingsStore: ChatSettingsStore
     @EnvironmentObject private var overlayManager: FloatingChatOverlayManager
     @EnvironmentObject private var chatService: AmazonConnectChatService
+    @State private var selectedTab: DemoTab = .poc
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             NavigationStack {
                 SwiftUIHostDemoView()
                     .toolbar {
@@ -19,6 +26,7 @@ struct RootTabView: View {
                         }
                     }
             }
+            .tag(DemoTab.swiftUI)
             .tabItem {
                 Label("SwiftUI", systemImage: "sparkles.rectangle.stack")
             }
@@ -35,6 +43,7 @@ struct RootTabView: View {
                         }
                     }
             }
+            .tag(DemoTab.uikit)
             .tabItem {
                 Label("UIKit", systemImage: "rectangle.3.offgrid")
             }
@@ -42,7 +51,14 @@ struct RootTabView: View {
             NavigationStack {
                 ScrollView {
                     VStack(spacing: 20) {
-                        ConnectionFormView()
+                        ChatStatusCard(
+                            title: "Verified Working Chat",
+                            description: "Use the inline panel below for the verified working mock conversation flow. The same chat service powers both the inline panel and the floating bubble.",
+                            accent: .orange
+                        )
+
+                        ChatPanelView(isOverlayPresentation: false)
+                            .frame(minHeight: 560)
 
                         ChatStatusCard(
                             title: "Provider Status",
@@ -50,27 +66,19 @@ struct RootTabView: View {
                             accent: statusColor
                         )
 
+                        ConnectionFormView()
+
                         ChatStatusCard(
                             title: "Current Architecture",
                             description: settingsStore.providerMode == .mock ? "Mock provider drives the transcript locally. The UI layer is already structured so you can swap to the real SDK provider later." : "Real SDK provider selected. The app will attempt the true Amazon Connect SDK path as soon as a bootstrap service returns participant details.",
                             accent: settingsStore.providerMode == .mock ? .green : .blue
                         )
-
-                        ChatStatusCard(
-                            title: "Typing Test",
-                            description: "Use the inline panel below if the floating overlay does not capture keyboard focus reliably in simulator. The same chat service powers both views.",
-                            accent: .orange
-                        )
-
-                        if !overlayManager.isVisible {
-                            ChatPanelView(isOverlayPresentation: false)
-                                .frame(minHeight: 560)
-                        }
                     }
                     .padding(20)
                 }
                 .navigationTitle("POC")
             }
+            .tag(DemoTab.poc)
             .tabItem {
                 Label("POC", systemImage: "testtube.2")
             }
