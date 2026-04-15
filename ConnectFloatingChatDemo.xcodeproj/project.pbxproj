@@ -1,0 +1,381 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A10000000000000000000001 /* ConnectFloatingChatDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000001 /* ConnectFloatingChatDemoApp.swift */; };
+		A10000000000000000000002 /* ChatSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000002 /* ChatSettingsStore.swift */; };
+		A10000000000000000000003 /* ChatMessageItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000003 /* ChatMessageItem.swift */; };
+		A10000000000000000000004 /* StartChatBackendClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000004 /* StartChatBackendClient.swift */; };
+		A10000000000000000000005 /* AmazonConnectChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000005 /* AmazonConnectChatService.swift */; };
+		A10000000000000000000006 /* FloatingChatOverlayManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000006 /* FloatingChatOverlayManager.swift */; };
+		A10000000000000000000007 /* PassthroughWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000007 /* PassthroughWindow.swift */; };
+		A10000000000000000000008 /* RootTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000008 /* RootTabView.swift */; };
+		A10000000000000000000009 /* SwiftUIHostDemoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000009 /* SwiftUIHostDemoView.swift */; };
+		A1000000000000000000000A /* ConnectionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* ConnectionFormView.swift */; };
+		A1000000000000000000000B /* FloatingChatOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* FloatingChatOverlayView.swift */; };
+		A1000000000000000000000C /* ChatPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* ChatPanelView.swift */; };
+		A1000000000000000000000D /* UIKitDemoHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* UIKitDemoHostView.swift */; };
+		A1000000000000000000000E /* UIKitDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* UIKitDemoViewController.swift */; };
+		A10000000000000000000010 /* AmazonConnectChatIOS.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* AmazonConnectChatIOS.xcframework */; };
+		A10000000000000000000011 /* AWSCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* AWSCore.xcframework */; };
+		A10000000000000000000012 /* AWSConnectParticipant.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* AWSConnectParticipant.xcframework */; };
+		A10000000000000000000013 /* AmazonConnectChatIOS.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000010 /* AmazonConnectChatIOS.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A10000000000000000000014 /* AWSCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000011 /* AWSCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		A10000000000000000000015 /* AWSConnectParticipant.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = A20000000000000000000012 /* AWSConnectParticipant.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A30000000000000000000001 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				A10000000000000000000013 /* AmazonConnectChatIOS.xcframework in Embed Frameworks */,
+				A10000000000000000000014 /* AWSCore.xcframework in Embed Frameworks */,
+				A10000000000000000000015 /* AWSConnectParticipant.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		A20000000000000000000001 /* ConnectFloatingChatDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectFloatingChatDemoApp.swift; sourceTree = "<group>"; };
+		A20000000000000000000002 /* ChatSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatSettingsStore.swift; sourceTree = "<group>"; };
+		A20000000000000000000003 /* ChatMessageItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageItem.swift; sourceTree = "<group>"; };
+		A20000000000000000000004 /* StartChatBackendClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartChatBackendClient.swift; sourceTree = "<group>"; };
+		A20000000000000000000005 /* AmazonConnectChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmazonConnectChatService.swift; sourceTree = "<group>"; };
+		A20000000000000000000006 /* FloatingChatOverlayManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingChatOverlayManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000007 /* PassthroughWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassthroughWindow.swift; sourceTree = "<group>"; };
+		A20000000000000000000008 /* RootTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootTabView.swift; sourceTree = "<group>"; };
+		A20000000000000000000009 /* SwiftUIHostDemoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIHostDemoView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000A /* ConnectionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionFormView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000B /* FloatingChatOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingChatOverlayView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000C /* ChatPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPanelView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000D /* UIKitDemoHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitDemoHostView.swift; sourceTree = "<group>"; };
+		A2000000000000000000000E /* UIKitDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitDemoViewController.swift; sourceTree = "<group>"; };
+		A2000000000000000000000F /* ConnectFloatingChatDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = ConnectFloatingChatDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A20000000000000000000010 /* AmazonConnectChatIOS.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AmazonConnectChatIOS.xcframework; path = Vendor/AmazonConnectChatIOS.xcframework; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000011 /* AWSCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AWSCore.xcframework; path = Vendor/AWSCore.xcframework; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000012 /* AWSConnectParticipant.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AWSConnectParticipant.xcframework; path = Vendor/AWSConnectParticipant.xcframework; sourceTree = SOURCE_ROOT; };
+		A20000000000000000000013 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A30000000000000000000002 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000010 /* AmazonConnectChatIOS.xcframework in Frameworks */,
+				A10000000000000000000011 /* AWSCore.xcframework in Frameworks */,
+				A10000000000000000000012 /* AWSConnectParticipant.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A40000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				A40000000000000000000002 /* ConnectFloatingChatDemo */,
+				A40000000000000000000006 /* Vendor */,
+				A40000000000000000000007 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A40000000000000000000002 /* ConnectFloatingChatDemo */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000001 /* ConnectFloatingChatDemoApp.swift */,
+				A40000000000000000000003 /* Models */,
+				A40000000000000000000004 /* Services */,
+				A40000000000000000000005 /* Views */,
+				A40000000000000000000008 /* UIKit */,
+				A40000000000000000000009 /* Supporting */,
+				A20000000000000000000013 /* Info.plist */,
+			);
+			path = ConnectFloatingChatDemo;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000003 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000002 /* ChatSettingsStore.swift */,
+				A20000000000000000000003 /* ChatMessageItem.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000004 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000004 /* StartChatBackendClient.swift */,
+				A20000000000000000000005 /* AmazonConnectChatService.swift */,
+				A20000000000000000000006 /* FloatingChatOverlayManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000005 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000008 /* RootTabView.swift */,
+				A20000000000000000000009 /* SwiftUIHostDemoView.swift */,
+				A2000000000000000000000A /* ConnectionFormView.swift */,
+				A2000000000000000000000B /* FloatingChatOverlayView.swift */,
+				A2000000000000000000000C /* ChatPanelView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000006 /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000010 /* AmazonConnectChatIOS.xcframework */,
+				A20000000000000000000011 /* AWSCore.xcframework */,
+				A20000000000000000000012 /* AWSConnectParticipant.xcframework */,
+			);
+			path = Vendor;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000007 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000F /* ConnectFloatingChatDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000008 /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				A2000000000000000000000D /* UIKitDemoHostView.swift */,
+				A2000000000000000000000E /* UIKitDemoViewController.swift */,
+			);
+			path = UIKit;
+			sourceTree = "<group>";
+		};
+		A40000000000000000000009 /* Supporting */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000007 /* PassthroughWindow.swift */,
+			);
+			path = Supporting;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A50000000000000000000001 /* ConnectFloatingChatDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A60000000000000000000002 /* Build configuration list for PBXNativeTarget "ConnectFloatingChatDemo" */;
+			buildPhases = (
+				A30000000000000000000003 /* Sources */,
+				A30000000000000000000002 /* Frameworks */,
+				A30000000000000000000001 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ConnectFloatingChatDemo;
+			productName = ConnectFloatingChatDemo;
+			productReference = A2000000000000000000000F /* ConnectFloatingChatDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A50000000000000000000002 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
+				TargetAttributes = {
+					A50000000000000000000001 = {
+						CreatedOnToolsVersion = 26.3;
+					};
+				};
+			};
+			buildConfigurationList = A60000000000000000000001 /* Build configuration list for PBXProject "ConnectFloatingChatDemo" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A40000000000000000000001;
+			productRefGroup = A40000000000000000000007 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A50000000000000000000001 /* ConnectFloatingChatDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A30000000000000000000003 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A10000000000000000000001 /* ConnectFloatingChatDemoApp.swift in Sources */,
+				A10000000000000000000002 /* ChatSettingsStore.swift in Sources */,
+				A10000000000000000000003 /* ChatMessageItem.swift in Sources */,
+				A10000000000000000000004 /* StartChatBackendClient.swift in Sources */,
+				A10000000000000000000005 /* AmazonConnectChatService.swift in Sources */,
+				A10000000000000000000006 /* FloatingChatOverlayManager.swift in Sources */,
+				A10000000000000000000007 /* PassthroughWindow.swift in Sources */,
+				A10000000000000000000008 /* RootTabView.swift in Sources */,
+				A10000000000000000000009 /* SwiftUIHostDemoView.swift in Sources */,
+				A1000000000000000000000A /* ConnectionFormView.swift in Sources */,
+				A1000000000000000000000B /* FloatingChatOverlayView.swift in Sources */,
+				A1000000000000000000000C /* ChatPanelView.swift in Sources */,
+				A1000000000000000000000D /* UIKitDemoHostView.swift in Sources */,
+				A1000000000000000000000E /* UIKitDemoViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		A70000000000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A70000000000000000000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ENABLE_MODULES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		A70000000000000000000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ConnectFloatingChatDemo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.ConnectFloatingChatDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		A70000000000000000000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ConnectFloatingChatDemo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.example.ConnectFloatingChatDemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A60000000000000000000001 /* Build configuration list for PBXProject "ConnectFloatingChatDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A70000000000000000000001 /* Debug */,
+				A70000000000000000000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A60000000000000000000002 /* Build configuration list for PBXNativeTarget "ConnectFloatingChatDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A70000000000000000000003 /* Debug */,
+				A70000000000000000000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A50000000000000000000002 /* Project object */;
+}
