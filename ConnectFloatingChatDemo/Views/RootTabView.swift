@@ -62,8 +62,10 @@ struct RootTabView: View {
                             accent: .orange
                         )
 
-                        ChatPanelView(isOverlayPresentation: false)
-                            .frame(minHeight: 560)
+                        if !overlayManager.isVisible {
+                            ChatPanelView(isOverlayPresentation: false)
+                                .frame(minHeight: 560)
+                        }
                     }
                     .padding(20)
                 }
