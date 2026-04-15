@@ -54,6 +54,9 @@ struct ChatPanelView: View {
                 .stroke(Color.white.opacity(0.65), lineWidth: 1)
         )
         .shadow(color: .black.opacity(0.16), radius: 24, y: 14)
+        .onAppear {
+            startMockSessionIfNeeded()
+        }
     }
 
     private var header: some View {
@@ -169,6 +172,17 @@ struct ChatPanelView: View {
 
             Text(settingsStore.providerMode == .mock ? "Start the mock session and the floating chat will fill with realistic support messages immediately." : "The real provider is already wired to the Amazon Connect SDK. Once your bootstrap endpoint exists, connect here and the rest of the UI can stay the same.")
                 .foregroundStyle(.secondary)
+
+            if settingsStore.providerMode == .mock {
+                Button {
+                    chatService.startSession(using: settingsStore.currentConfiguration)
+                } label: {
+                    Label("Start Mock Conversation", systemImage: "play.circle.fill")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(Color(red: 0.02, green: 0.66, blue: 0.62))
+            }
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -176,6 +190,12 @@ struct ChatPanelView: View {
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(Color.white)
         )
+    }
+
+    private func startMockSessionIfNeeded() {
+        guard settingsStore.providerMode == .mock else { return }
+        guard chatService.connectionState == .idle else { return }
+        chatService.startSession(using: settingsStore.currentConfiguration)
     }
 }
 
