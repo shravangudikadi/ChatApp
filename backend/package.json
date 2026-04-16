@@ -1,0 +1,14 @@
+{
+  "name": "connect-floating-chat-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs"
+  },
+  "dependencies": {
+    "@aws-sdk/client-connect": "^3.883.0",
+    "dotenv": "^16.5.0"
+  }
+}

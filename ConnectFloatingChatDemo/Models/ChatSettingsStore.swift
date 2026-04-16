@@ -139,7 +139,7 @@ struct ChatProviderConfiguration {
         membershipTier: "Gold",
         locale: "en-US",
         issueType: "delivery_status",
-        bootstrapEndpoint: "https://your-api.example.com/chat/start",
+        bootstrapEndpoint: "http://127.0.0.1:8787/api/chat/start",
         instanceId: "connect-instance-id",
         contactFlowId: "contact-flow-id"
     )
@@ -172,7 +172,7 @@ final class ChatSettingsStore: ObservableObject {
         membershipTier = userDefaults.string(forKey: Keys.membershipTier) ?? "Gold"
         locale = userDefaults.string(forKey: Keys.locale) ?? "en-US"
         issueType = userDefaults.string(forKey: Keys.issueType) ?? "delivery_status"
-        bootstrapEndpoint = userDefaults.string(forKey: Keys.bootstrapEndpoint) ?? "https://your-api.example.com/chat/start"
+        bootstrapEndpoint = userDefaults.string(forKey: Keys.bootstrapEndpoint) ?? "http://127.0.0.1:8787/api/chat/start"
         instanceId = userDefaults.string(forKey: Keys.instanceId) ?? "connect-instance-id"
         contactFlowId = userDefaults.string(forKey: Keys.contactFlowId) ?? "contact-flow-id"
     }

@@ -2,7 +2,12 @@
 
 Native iOS POC for a floating support chat experience using the Amazon Connect Chat iOS SDK binaries.
 
-This repository currently ships a **mock conversation UI** so the team can evaluate the widget behavior quickly without requiring a live Amazon Connect backend. The Amazon Connect frameworks are still embedded in the project, and the README below explains exactly how a real production integration would work.
+This repository now ships both:
+
+- a **mock conversation UI** for fast local UX evaluation
+- a **real Amazon Connect path** that calls a local backend API, which then calls `StartChatContact`
+
+The Amazon Connect frameworks are embedded in the iOS project, and the repo now includes a minimal backend service in `backend/`.
 
 ## Project Goal
 
@@ -17,18 +22,19 @@ This POC is meant to answer these product and engineering questions:
 
 What is implemented now:
 
-- Floating bubble overlay using a dedicated `UIWindow`
+- Floating bubble overlay hosted in the main app view hierarchy
 - Chat panel rendered in SwiftUI
 - Demo entry points from both SwiftUI and UIKit screens
 - Mock transcript with fake agent replies for UX evaluation
 - Amazon Connect binary frameworks already embedded into the Xcode project
+- Local backend bootstrap API for real `StartChatContact`
+- Real iOS SDK provider wired to the backend bootstrap response
 
 What is not implemented yet:
 
-- Real `StartChatContact` backend
-- Real participant/session bootstrap
-- Live transcript from Amazon Connect
-- Real agent routing, bot handoff, or contact attributes flowing from backend
+- Your AWS credentials and Amazon Connect resource values
+- Live transcript verification against your own Amazon Connect instance
+- Production auth, rate limiting, and secret management for the backend
 
 ## Included Frameworks
 
@@ -38,11 +44,30 @@ What is not implemented yet:
 
 ## Open And Run
 
+### Mock Mode
+
 1. Open `ConnectFloatingChatDemo.xcodeproj` in Xcode.
 2. Select your Apple signing team.
 3. Build and run on an iOS simulator or device.
 4. Open the `POC` tab.
-5. Tap `Start Mock Chat` or `Open Chat Panel`.
+5. Use the inline chat or `Open Chat Panel`.
+
+### Real Amazon Connect Mode
+
+1. In `backend/`, copy `.env.example` to `.env`.
+2. Fill your AWS credential source and Amazon Connect values.
+3. Run:
+
+```bash
+cd backend
+npm install
+npm run dev
+```
+
+4. In the iOS app, switch provider to `Amazon Connect`.
+5. Confirm the bootstrap endpoint is `http://127.0.0.1:8787/api/chat/start`.
+6. Fill your real `Instance ID`, `Contact Flow ID`, and `Region` if they are not already in `.env`.
+7. Tap `Connect Real SDK`.
 
 ## POC Walkthrough
 
@@ -57,7 +82,7 @@ The floating widget behavior is the important part of this POC:
 - tapping `Show Floating Bubble` places a bubble above the whole app
 - tapping the bubble opens the chat panel
 - the panel is not tied to one view controller or one SwiftUI screen
-- the overlay is hosted in a separate `UIWindow`
+- the overlay now lives in the same app hierarchy as the main content so the chat input behaves consistently
 
 ## Folder Structure
 
@@ -71,6 +96,10 @@ ConnectFloatingChatDemo/
 │   ├── Supporting/
 │   ├── UIKit/
 │   └── Views/
+├── backend/
+│   ├── .env.example
+│   ├── package.json
+│   └── server.mjs
 ├── Vendor/
 │   ├── AmazonConnectChatIOS.xcframework
 │   ├── AWSCore.xcframework
@@ -101,6 +130,42 @@ It does **not** by itself:
 - replace your backend
 
 In a real architecture, your backend is still responsible for creating the chat with Amazon Connect.
+
+## Local Backend API
+
+The backend included in this repo exposes:
+
+- `GET /health`
+- `POST /api/chat/start`
+
+Expected request body from the iOS app:
+
+```json
+{
+  "customerName": "Taylor",
+  "customerId": "CUST-1024",
+  "orderId": "ORD-9981",
+  "membershipTier": "Gold",
+  "locale": "en-US",
+  "issueType": "delivery_status",
+  "region": "us-east-1",
+  "instanceId": "your-connect-instance-id",
+  "contactFlowId": "your-contact-flow-id"
+}
+```
+
+Response shape returned to the iOS app:
+
+```json
+{
+  "participantToken": "token-from-start-chat-contact",
+  "participantId": "participant-id",
+  "contactId": "contact-id",
+  "region": "us-east-1"
+}
+```
+
+The iOS app already understands that response shape through `NetworkChatSessionBootstrapProvider`.
 
 ## Real Integration Architecture
 
@@ -424,4 +489,3 @@ At that point, keep the UI but replace the mock transcript engine with:
 This repository is intended to be cloned on other Macs for continued development:
 
 - current remote: `https://github.com/shravangudikadi/ChatApp.git`
-

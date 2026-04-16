@@ -8,7 +8,9 @@ struct ConnectFloatingChatDemoApp: App {
 
     init() {
         let settingsStore = ChatSettingsStore()
-        let chatService = AmazonConnectChatService()
+        let chatService = AmazonConnectChatService(
+            liveBootstrapProvider: NetworkChatSessionBootstrapProvider()
+        )
         _settingsStore = StateObject(wrappedValue: settingsStore)
         _chatService = StateObject(wrappedValue: chatService)
         _overlayManager = StateObject(wrappedValue: FloatingChatOverlayManager())
