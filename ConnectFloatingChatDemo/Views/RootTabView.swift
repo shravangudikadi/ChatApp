@@ -3,7 +3,6 @@ import SwiftUI
 struct RootTabView: View {
     private enum DemoTab: Hashable {
         case swiftUI
-        case uikit
         case poc
     }
 
@@ -30,23 +29,6 @@ struct RootTabView: View {
                 .tag(DemoTab.swiftUI)
                 .tabItem {
                     Label("SwiftUI", systemImage: "sparkles.rectangle.stack")
-                }
-
-                NavigationStack {
-                    UIKitDemoHostView()
-                        .toolbar {
-                            ToolbarItem(placement: .topBarTrailing) {
-                                Button {
-                                    overlayManager.showBubble()
-                                } label: {
-                                    Label("Bubble", systemImage: "square.stack.3d.up")
-                                }
-                            }
-                        }
-                }
-                .tag(DemoTab.uikit)
-                .tabItem {
-                    Label("UIKit", systemImage: "rectangle.3.offgrid")
                 }
 
                 NavigationStack {

@@ -18,8 +18,6 @@
 		A1000000000000000000000A /* ConnectionFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000A /* ConnectionFormView.swift */; };
 		A1000000000000000000000B /* FloatingChatOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000B /* FloatingChatOverlayView.swift */; };
 		A1000000000000000000000C /* ChatPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000C /* ChatPanelView.swift */; };
-		A1000000000000000000000D /* UIKitDemoHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000D /* UIKitDemoHostView.swift */; };
-		A1000000000000000000000E /* UIKitDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000000000000000000000E /* UIKitDemoViewController.swift */; };
 		A10000000000000000000016 /* ChatComponentRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000014 /* ChatComponentRegistry.swift */; };
 /* End PBXBuildFile section */
 
@@ -48,8 +46,6 @@
 		A2000000000000000000000A /* ConnectionFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionFormView.swift; sourceTree = "<group>"; };
 		A2000000000000000000000B /* FloatingChatOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingChatOverlayView.swift; sourceTree = "<group>"; };
 		A2000000000000000000000C /* ChatPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPanelView.swift; sourceTree = "<group>"; };
-		A2000000000000000000000D /* UIKitDemoHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitDemoHostView.swift; sourceTree = "<group>"; };
-		A2000000000000000000000E /* UIKitDemoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIKitDemoViewController.swift; sourceTree = "<group>"; };
 		A2000000000000000000000F /* ConnectFloatingChatDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; path = ConnectFloatingChatDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A20000000000000000000013 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A20000000000000000000014 /* ChatComponentRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatComponentRegistry.swift; sourceTree = "<group>"; };
@@ -82,7 +78,6 @@
 				A40000000000000000000003 /* Models */,
 				A40000000000000000000004 /* Services */,
 				A40000000000000000000005 /* Views */,
-				A40000000000000000000008 /* UIKit */,
 				A40000000000000000000009 /* Supporting */,
 				A20000000000000000000013 /* Info.plist */,
 			);
@@ -133,15 +128,6 @@
 				A2000000000000000000000F /* ConnectFloatingChatDemo.app */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		A40000000000000000000008 /* UIKit */ = {
-			isa = PBXGroup;
-			children = (
-				A2000000000000000000000D /* UIKitDemoHostView.swift */,
-				A2000000000000000000000E /* UIKitDemoViewController.swift */,
-			);
-			path = UIKit;
 			sourceTree = "<group>";
 		};
 		A40000000000000000000009 /* Supporting */ = {
@@ -221,8 +207,6 @@
 				A1000000000000000000000A /* ConnectionFormView.swift in Sources */,
 				A1000000000000000000000B /* FloatingChatOverlayView.swift in Sources */,
 				A1000000000000000000000C /* ChatPanelView.swift in Sources */,
-				A1000000000000000000000D /* UIKitDemoHostView.swift in Sources */,
-				A1000000000000000000000E /* UIKitDemoViewController.swift in Sources */,
 				A10000000000000000000016 /* ChatComponentRegistry.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

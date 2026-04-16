@@ -27,7 +27,7 @@ struct SwiftUIHostDemoView: View {
 
                     ChatStatusCard(
                         title: "Floating Overlay",
-                        description: "This bubble is hosted inside a separate `UIWindow`, so it can float over SwiftUI and UIKit content without being tied to one screen hierarchy.",
+                        description: "This bubble sits above the SwiftUI app shell, so it can stay available while you move between screens without being tied to one view hierarchy.",
                         accent: Color(red: 0.11, green: 0.46, blue: 0.95)
                     )
 
