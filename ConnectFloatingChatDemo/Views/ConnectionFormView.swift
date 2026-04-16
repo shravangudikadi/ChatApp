@@ -19,31 +19,37 @@ struct ConnectionFormView: View {
                 accent: Color(red: 0.02, green: 0.66, blue: 0.62)
             )
 
-            TextField("Customer Name", text: $settingsStore.customerName)
-                .textFieldStyle(.roundedBorder)
+            contextField("Traveler Name", text: $settingsStore.customerName)
 
-            TextField("Customer ID", text: $settingsStore.customerId)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .textFieldStyle(.roundedBorder)
+            contextField(
+                "Profile ID",
+                text: $settingsStore.customerId,
+                disableAutocorrection: true,
+                autocapitalization: .never
+            )
 
-            TextField("Order ID", text: $settingsStore.orderId)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .textFieldStyle(.roundedBorder)
+            contextField(
+                "Booking ID",
+                text: $settingsStore.orderId,
+                disableAutocorrection: true,
+                autocapitalization: .never
+            )
 
-            TextField("Membership Tier", text: $settingsStore.membershipTier)
-                .textFieldStyle(.roundedBorder)
+            contextField("Member Tier", text: $settingsStore.membershipTier)
 
-            TextField("Locale", text: $settingsStore.locale)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .textFieldStyle(.roundedBorder)
+            contextField(
+                "Language / Locale",
+                text: $settingsStore.locale,
+                disableAutocorrection: true,
+                autocapitalization: .never
+            )
 
-            TextField("Issue Type", text: $settingsStore.issueType)
-                .textInputAutocapitalization(.never)
-                .autocorrectionDisabled()
-                .textFieldStyle(.roundedBorder)
+            contextField(
+                "Intent",
+                text: $settingsStore.issueType,
+                disableAutocorrection: true,
+                autocapitalization: .never
+            )
 
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "rectangle.on.rectangle.angled")
@@ -101,6 +107,27 @@ struct ConnectionFormView: View {
         )
         .onAppear {
             chatService.resetDemo(using: settingsStore.currentConfiguration)
+        }
+    }
+}
+
+private extension ConnectionFormView {
+    @ViewBuilder
+    func contextField(
+        _ title: String,
+        text: Binding<String>,
+        disableAutocorrection: Bool = false,
+        autocapitalization: TextInputAutocapitalization = .sentences
+    ) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(.secondary)
+
+            TextField(title, text: text)
+                .textInputAutocapitalization(autocapitalization)
+                .autocorrectionDisabled(disableAutocorrection)
+                .textFieldStyle(.roundedBorder)
         }
     }
 }
