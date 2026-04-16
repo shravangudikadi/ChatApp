@@ -3,17 +3,17 @@ import SwiftUI
 @main
 struct ConnectFloatingChatDemoApp: App {
     @StateObject private var settingsStore: ChatSettingsStore
-    @StateObject private var chatService: AmazonConnectChatService
+    @StateObject private var chatService: InHouseChatService
     @StateObject private var overlayManager: FloatingChatOverlayManager
+    @StateObject private var componentRegistry: ChatComponentRegistry
 
     init() {
         let settingsStore = ChatSettingsStore()
-        let chatService = AmazonConnectChatService(
-            liveBootstrapProvider: NetworkChatSessionBootstrapProvider()
-        )
+        let chatService = InHouseChatService()
         _settingsStore = StateObject(wrappedValue: settingsStore)
         _chatService = StateObject(wrappedValue: chatService)
         _overlayManager = StateObject(wrappedValue: FloatingChatOverlayManager())
+        _componentRegistry = StateObject(wrappedValue: ChatComponentRegistry())
     }
 
     var body: some Scene {
@@ -22,6 +22,7 @@ struct ConnectFloatingChatDemoApp: App {
                 .environmentObject(settingsStore)
                 .environmentObject(chatService)
                 .environmentObject(overlayManager)
+                .environmentObject(componentRegistry)
         }
     }
 }

@@ -2,28 +2,21 @@ import SwiftUI
 
 struct ConnectionFormView: View {
     @EnvironmentObject private var settingsStore: ChatSettingsStore
-    @EnvironmentObject private var chatService: AmazonConnectChatService
+    @EnvironmentObject private var chatService: InHouseChatService
     @EnvironmentObject private var overlayManager: FloatingChatOverlayManager
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Provider-Ready POC Controls")
+            Text("In-House POC Controls")
                 .font(.title2.weight(.bold))
 
-            Text("Run a fully local mock today, or switch to the real Amazon Connect SDK provider. Later, you only need to replace the bootstrap provider that returns participant chat details.")
+            Text("Run a fully local in-house chat shell that can render your reusable SwiftUI views directly inside the conversation. The floating bubble and panel stay the same no matter which app component you inject.")
                 .foregroundStyle(.secondary)
 
-            Picker("Provider", selection: $settingsStore.providerMode) {
-                ForEach(ChatProviderMode.allCases) { mode in
-                    Text(mode.title).tag(mode)
-                }
-            }
-            .pickerStyle(.segmented)
-
             ChatStatusCard(
-                title: "Selected Provider",
-                description: settingsStore.providerMode.description,
-                accent: settingsStore.providerMode == .mock ? Color(red: 0.02, green: 0.66, blue: 0.62) : Color(red: 0.11, green: 0.46, blue: 0.95)
+                title: "Experience",
+                description: settingsStore.experienceDescription,
+                accent: Color(red: 0.02, green: 0.66, blue: 0.62)
             )
 
             TextField("Customer Name", text: $settingsStore.customerName)
@@ -52,61 +45,29 @@ struct ConnectionFormView: View {
                 .autocorrectionDisabled()
                 .textFieldStyle(.roundedBorder)
 
-            if settingsStore.providerMode == .amazonConnect {
-                Picker("AWS Region", selection: $settingsStore.region) {
-                    ForEach(AWSRegionOption.allCases) { region in
-                        Text(region.displayName).tag(region)
-                    }
-                }
-                .pickerStyle(.menu)
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: "rectangle.on.rectangle.angled")
+                    .foregroundStyle(Color(red: 0.02, green: 0.66, blue: 0.62))
 
-                TextField("Bootstrap Endpoint URL", text: $settingsStore.bootstrapEndpoint)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .keyboardType(.URL)
-                    .textFieldStyle(.roundedBorder)
-
-                TextField("Connect Instance ID", text: $settingsStore.instanceId)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .textFieldStyle(.roundedBorder)
-
-                TextField("Contact Flow ID", text: $settingsStore.contactFlowId)
-                    .textInputAutocapitalization(.never)
-                    .autocorrectionDisabled()
-                    .textFieldStyle(.roundedBorder)
-
-                HStack(alignment: .top, spacing: 12) {
-                    Image(systemName: "bolt.horizontal.circle")
-                        .foregroundStyle(Color(red: 0.11, green: 0.46, blue: 0.95))
-
-                    Text("The real provider already calls the Amazon Connect iOS SDK. When your backend is ready, replace the bootstrap provider so it returns `participantToken`, `participantId`, and `contactId` from `StartChatContact`.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(14)
-                .background(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Color(red: 0.95, green: 0.97, blue: 1.0))
-                )
+                Text("Your internal API can return structured payloads and the chat can render your existing SwiftUI components inside the transcript. Today the sample uses a hotel carousel, but the same pattern works for flights, destinations, itineraries, or booking cards.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
             }
+            .padding(14)
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(Color(red: 0.95, green: 0.99, blue: 0.97))
+            )
 
             Button {
                 chatService.startSession(using: settingsStore.currentConfiguration)
-                if settingsStore.providerMode == .amazonConnect {
-                    overlayManager.expand()
-                } else {
-                    overlayManager.hide()
-                }
+                overlayManager.hide()
             } label: {
-                Label(
-                    settingsStore.providerMode.startButtonTitle,
-                    systemImage: settingsStore.providerMode == .mock ? "play.circle.fill" : "antenna.radiowaves.left.and.right"
-                )
+                Label(settingsStore.startButtonTitle, systemImage: "play.circle.fill")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .tint(settingsStore.providerMode == .mock ? Color(red: 0.02, green: 0.66, blue: 0.62) : Color(red: 0.11, green: 0.46, blue: 0.95))
+            .tint(Color(red: 0.02, green: 0.66, blue: 0.62))
 
             Button {
                 overlayManager.expand()
@@ -139,9 +100,6 @@ struct ConnectionFormView: View {
                 .shadow(color: .black.opacity(0.08), radius: 18, y: 12)
         )
         .onAppear {
-            chatService.resetDemo(using: settingsStore.currentConfiguration)
-        }
-        .onChange(of: settingsStore.providerMode) { _ in
             chatService.resetDemo(using: settingsStore.currentConfiguration)
         }
     }

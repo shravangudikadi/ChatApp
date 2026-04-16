@@ -9,7 +9,7 @@ struct RootTabView: View {
 
     @EnvironmentObject private var settingsStore: ChatSettingsStore
     @EnvironmentObject private var overlayManager: FloatingChatOverlayManager
-    @EnvironmentObject private var chatService: AmazonConnectChatService
+    @EnvironmentObject private var chatService: InHouseChatService
     @State private var selectedTab: DemoTab = .poc
 
     var body: some View {
@@ -54,7 +54,7 @@ struct RootTabView: View {
                         VStack(spacing: 20) {
                             ChatStatusCard(
                                 title: "Verified Working Chat",
-                                description: "Use the inline panel below for the verified working mock conversation flow. The same chat service powers both the inline panel and the floating bubble.",
+                                description: "Use the inline panel below for the verified in-house conversation flow. The same chat service powers both the inline panel and the floating bubble.",
                                 accent: .orange
                             )
 
@@ -71,8 +71,8 @@ struct RootTabView: View {
 
                             ChatStatusCard(
                                 title: "Current Architecture",
-                                description: settingsStore.providerMode == .mock ? "Mock provider drives the transcript locally. The UI layer is already structured so you can swap to the real SDK provider later." : "Real SDK provider selected. The app will attempt the true Amazon Connect SDK path as soon as a bootstrap service returns participant details.",
-                                accent: settingsStore.providerMode == .mock ? .green : .blue
+                                description: "The in-house provider returns structured payloads and renders reusable app views directly inside chat. Swap the sample hotel component for your office app's SwiftUI view later without changing the floating bubble experience.",
+                                accent: .green
                             )
                         }
                         .padding(20)

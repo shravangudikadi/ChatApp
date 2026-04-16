@@ -2,8 +2,9 @@ import SwiftUI
 
 struct ChatPanelView: View {
     @EnvironmentObject private var settingsStore: ChatSettingsStore
-    @EnvironmentObject private var chatService: AmazonConnectChatService
+    @EnvironmentObject private var chatService: InHouseChatService
     @EnvironmentObject private var overlayManager: FloatingChatOverlayManager
+    @EnvironmentObject private var componentRegistry: ChatComponentRegistry
 
     let isOverlayPresentation: Bool
     @FocusState private var isComposerFocused: Bool
@@ -30,6 +31,7 @@ struct ChatPanelView: View {
                         } else {
                             ForEach(chatService.messages) { item in
                                 MessageBubbleRow(item: item)
+                                    .environmentObject(componentRegistry)
                                     .id(item.id)
                             }
                         }
@@ -101,17 +103,17 @@ struct ChatPanelView: View {
 
     private var providerModeCard: some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: chatService.activeProviderMode == .mock ? "testtube.2" : "antenna.radiowaves.left.and.right")
-                .foregroundStyle(chatService.activeProviderMode == .mock ? Color(red: 0.02, green: 0.66, blue: 0.62) : Color(red: 0.11, green: 0.46, blue: 0.95))
+            Image(systemName: "rectangle.on.rectangle.angled")
+                .foregroundStyle(Color(red: 0.02, green: 0.66, blue: 0.62))
 
-            Text(chatService.providerDescription)
+            Text(chatService.experienceDescription)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
         .padding(14)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(chatService.activeProviderMode == .mock ? Color(red: 0.95, green: 0.99, blue: 0.97) : Color(red: 0.95, green: 0.97, blue: 1.0))
+                .fill(Color(red: 0.95, green: 0.99, blue: 0.97))
         )
     }
 
@@ -150,12 +152,12 @@ struct ChatPanelView: View {
                             ProgressView()
                                 .frame(width: 40, height: 40)
                         } else {
-                            Image(systemName: settingsStore.providerMode == .mock ? "play.circle.fill" : "antenna.radiowaves.left.and.right")
+                            Image(systemName: "play.circle.fill")
                                 .frame(width: 40, height: 40)
                         }
                     }
                     .buttonStyle(.borderedProminent)
-                    .tint(settingsStore.providerMode == .mock ? Color(red: 0.02, green: 0.66, blue: 0.62) : Color(red: 0.11, green: 0.46, blue: 0.95))
+                    .tint(Color(red: 0.02, green: 0.66, blue: 0.62))
                 }
             }
 
@@ -192,19 +194,17 @@ struct ChatPanelView: View {
             Text("No messages yet")
                 .font(.headline)
 
-            Text(settingsStore.providerMode == .mock ? "Start the mock session and the floating chat will fill with realistic support messages immediately." : "The real provider is already wired to the Amazon Connect SDK. Once your bootstrap endpoint exists, connect here and the rest of the UI can stay the same.")
+            Text("Start the in-house session and the transcript will return travel-style responses, including reusable SwiftUI components rendered directly in chat.")
                 .foregroundStyle(.secondary)
 
-            if settingsStore.providerMode == .mock {
-                Button {
-                    chatService.startSession(using: settingsStore.currentConfiguration)
-                } label: {
-                    Label("Start Mock Conversation", systemImage: "play.circle.fill")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(Color(red: 0.02, green: 0.66, blue: 0.62))
+            Button {
+                chatService.startSession(using: settingsStore.currentConfiguration)
+            } label: {
+                Label("Start In-House Conversation", systemImage: "play.circle.fill")
+                    .frame(maxWidth: .infinity)
             }
+            .buttonStyle(.borderedProminent)
+            .tint(Color(red: 0.02, green: 0.66, blue: 0.62))
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -216,25 +216,22 @@ struct ChatPanelView: View {
 
     @ViewBuilder
     private var quickReplyRow: some View {
-        if settingsStore.providerMode == .mock {
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Try a mock question")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Try a mock question")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.secondary)
 
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        quickReplyButton("Where is my order?")
-                        quickReplyButton("I want a refund")
-                        quickReplyButton("Talk to an agent")
-                    }
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    quickReplyButton("Show hotels in Miami")
+                    quickReplyButton("Weekend stay in New York")
+                    quickReplyButton("Any beach resorts?")
                 }
             }
         }
     }
 
     private func startMockSessionIfNeeded() {
-        guard settingsStore.providerMode == .mock else { return }
         guard chatService.connectionState == .idle else { return }
         chatService.startSession(using: settingsStore.currentConfiguration)
     }
@@ -261,6 +258,9 @@ struct ChatPanelView: View {
 }
 
 private struct MessageBubbleRow: View {
+    @EnvironmentObject private var componentRegistry: ChatComponentRegistry
+    @EnvironmentObject private var chatService: InHouseChatService
+
     let item: ChatMessageItem
 
     var body: some View {
@@ -269,13 +269,26 @@ private struct MessageBubbleRow: View {
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.secondary)
 
-            Text(item.text)
-                .frame(maxWidth: .infinity, alignment: textAlignment)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 12)
-                .background(bubbleColor)
-                .foregroundStyle(foregroundColor)
-                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            bubbleBody
+
+            if !item.actionChips.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 8) {
+                        ForEach(item.actionChips) { chip in
+                            Button {
+                                chatService.draftMessage = chip.prompt
+                                chatService.sendDraftMessage()
+                            } label: {
+                                Text(chip.title)
+                                    .font(.footnote.weight(.medium))
+                                    .padding(.horizontal, 12)
+                                    .padding(.vertical, 8)
+                            }
+                            .buttonStyle(.bordered)
+                        }
+                    }
+                }
+            }
 
             if let statusText = item.statusText {
                 Text(statusText)
@@ -284,6 +297,25 @@ private struct MessageBubbleRow: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: rowAlignment)
+    }
+
+    @ViewBuilder
+    private var bubbleBody: some View {
+        switch item.content {
+        case .text(let text):
+            Text(text)
+                .frame(maxWidth: .infinity, alignment: textAlignment)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 12)
+                .background(bubbleColor)
+                .foregroundStyle(foregroundColor)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        case .embeddedComponent(let component):
+            componentRegistry.view(for: component)
+                .padding(14)
+                .background(bubbleColor)
+                .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        }
     }
 
     private var alignment: HorizontalAlignment {
